@@ -1,17 +1,77 @@
 'use client';
 
-import { CreditCard, Download, QrCode, CheckCircle, Calendar, MapPin, Clock, Smartphone } from 'lucide-react';
+import { useState } from 'react';
+import { CreditCard, Download, QrCode, CheckCircle, Calendar, MapPin, Clock, Smartphone, X } from 'lucide-react';
 
 export default function GuestBadgePage() {
+    const [showAddWallet, setShowAddWallet] = useState(false);
+    const [walletAdded, setWalletAdded] = useState<'apple' | 'google' | null>(null);
+
+    const handleAddToWallet = (type: 'apple' | 'google') => {
+        setWalletAdded(type);
+        setTimeout(() => {
+            setWalletAdded(null);
+            setShowAddWallet(false);
+        }, 2000);
+    };
+
     return (
         <div className="space-y-6">
+            {/* Add to Wallet Modal */}
+            {showAddWallet && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-sm w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Add to Mobile Wallet</h3>
+                            <button onClick={() => setShowAddWallet(false)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => handleAddToWallet('apple')}
+                                className="w-full flex items-center gap-4 p-4 bg-black text-white rounded-xl hover:bg-gray-900 transition-colors"
+                            >
+                                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-2xl">
+                                    🍎
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <p className="font-medium">Apple Wallet</p>
+                                    <p className="text-sm text-white/70">Add to iPhone</p>
+                                </div>
+                                {walletAdded === 'apple' && <CheckCircle className="w-5 h-5 text-success" />}
+                            </button>
+                            <button
+                                onClick={() => handleAddToWallet('google')}
+                                className="w-full flex items-center gap-4 p-4 bg-primary text-white rounded-xl hover:bg-primary-light transition-colors"
+                            >
+                                <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-2xl">
+                                    📱
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <p className="font-medium">Google Wallet</p>
+                                    <p className="text-sm text-white/70">Add to Android</p>
+                                </div>
+                                {walletAdded === 'google' && <CheckCircle className="w-5 h-5 text-success" />}
+                            </button>
+                        </div>
+                        <p className="text-xs text-muted-foreground text-center mt-4">
+                            Your badge will be instantly available on your phone
+                        </p>
+                    </div>
+                </div>
+            )}
+
             {/* Page Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-primary">Event Badge</h1>
                     <p className="text-muted-foreground mt-1">Your digital access pass for Riyadh Tech Expo 2026</p>
                 </div>
-                <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-light transition-colors flex items-center gap-2">
+                <button
+                    onClick={() => setShowAddWallet(true)}
+                    className="btn btn-primary"
+                >
                     <Download className="w-4 h-4" />
                     Add to Wallet
                 </button>
@@ -72,7 +132,7 @@ export default function GuestBadgePage() {
                 {/* Badge Details */}
                 <div className="space-y-4">
                     {/* Access Level */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-border">
+                    <div className="card p-6">
                         <h3 className="font-semibold text-primary mb-4">Your Access Includes</h3>
                         <div className="space-y-3">
                             {[
@@ -97,7 +157,7 @@ export default function GuestBadgePage() {
                     </div>
 
                     {/* Event Schedule */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-border">
+                    <div className="card p-6">
                         <h3 className="font-semibold text-primary mb-4">Event Schedule</h3>
                         <div className="space-y-4">
                             {[
@@ -136,10 +196,16 @@ export default function GuestBadgePage() {
                                 <p className="text-sm text-muted-foreground">Quick access from your phone</p>
                             </div>
                             <div className="flex gap-2">
-                                <button className="px-4 py-2 bg-black text-white rounded-lg text-sm flex items-center gap-2">
+                                <button
+                                    onClick={() => handleAddToWallet('apple')}
+                                    className="px-4 py-2 bg-black text-white rounded-lg text-sm flex items-center gap-2"
+                                >
                                     <span>Apple</span>
                                 </button>
-                                <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm flex items-center gap-2">
+                                <button
+                                    onClick={() => handleAddToWallet('google')}
+                                    className="px-4 py-2 bg-primary text-white rounded-lg text-sm flex items-center gap-2"
+                                >
                                     <span>Google</span>
                                 </button>
                             </div>

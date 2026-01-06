@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Wallet, Clock, CheckCircle, DollarSign, ArrowUpRight, Download, FileText, TrendingUp, CreditCard, Zap } from 'lucide-react';
+import { Wallet, Clock, CheckCircle, DollarSign, ArrowUpRight, Download, FileText, TrendingUp, CreditCard, Zap, X, Eye } from 'lucide-react';
 
 // Mock invoice data
 const invoices = [
@@ -18,6 +18,11 @@ const recentPayments = [
 
 export default function VendorPaymentsPage() {
     const [showEarlyPayout, setShowEarlyPayout] = useState(false);
+    const [showCreateInvoice, setShowCreateInvoice] = useState(false);
+    const [showExport, setShowExport] = useState(false);
+    const [showBankDetails, setShowBankDetails] = useState(false);
+    const [showInvoice, setShowInvoice] = useState<string | null>(null);
+    const [exported, setExported] = useState(false);
 
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('en-SA', {
@@ -31,15 +36,150 @@ export default function VendorPaymentsPage() {
         .filter(inv => inv.status === 'approved' || inv.status === 'pending')
         .reduce((sum, inv) => sum + inv.amount, 0);
 
+    const selectedInvoice = invoices.find(i => i.id === showInvoice);
+
     return (
         <div className="space-y-6 animate-fade-in">
+            {/* Create Invoice Modal */}
+            {showCreateInvoice && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Create Invoice</h3>
+                            <button onClick={() => setShowCreateInvoice(false)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-primary mb-2">Event</label>
+                                <select className="input">
+                                    <option>Riyadh Tech Expo 2026</option>
+                                    <option>Saudi Cup 2026</option>
+                                    <option>LEAP Tech 2026</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-primary mb-2">Amount (SAR)</label>
+                                <input type="number" className="input" placeholder="50000" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-primary mb-2">Description</label>
+                                <textarea className="input" rows={3} placeholder="Service details..."></textarea>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button onClick={() => setShowCreateInvoice(false)} className="flex-1 btn btn-secondary">Cancel</button>
+                            <button onClick={() => setShowCreateInvoice(false)} className="flex-1 btn btn-primary">Create Invoice</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Export Modal */}
+            {showExport && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-sm w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Export Statements</h3>
+                            <button onClick={() => setShowExport(false)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-2">
+                            {['PDF Statement', 'CSV Export', 'Excel Spreadsheet'].map((format, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => { setExported(true); setTimeout(() => { setExported(false); setShowExport(false); }, 1500); }}
+                                    className="w-full flex items-center gap-3 p-4 border border-border rounded-xl hover:bg-secondary transition-colors"
+                                >
+                                    <Download className="w-5 h-5 text-primary" />
+                                    <span className="flex-1 text-left font-medium">{format}</span>
+                                    {exported && <CheckCircle className="w-5 h-5 text-success" />}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Bank Details Modal */}
+            {showBankDetails && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Bank Account Details</h3>
+                            <button onClick={() => setShowBankDetails(false)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Bank Name</p>
+                                <p className="font-medium text-primary">Riyad Bank</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Account Name</p>
+                                <p className="font-medium text-primary">Saudi Sound Systems Co.</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">IBAN</p>
+                                <p className="font-medium text-primary font-mono">SA44 2000 0001 2345 6789 1234</p>
+                            </div>
+                        </div>
+                        <button onClick={() => setShowBankDetails(false)} className="w-full btn btn-primary mt-6">Close</button>
+                    </div>
+                </div>
+            )}
+
+            {/* View Invoice Modal */}
+            {showInvoice && selectedInvoice && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Invoice Details</h3>
+                            <button onClick={() => setShowInvoice(null)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Invoice Number</p>
+                                <p className="font-medium text-primary">{selectedInvoice.id}</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Event</p>
+                                <p className="font-medium text-primary">{selectedInvoice.event}</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Amount</p>
+                                <p className="font-bold text-xl text-primary">{formatCurrency(selectedInvoice.amount)}</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Status</p>
+                                <p className={`font-medium capitalize ${selectedInvoice.status === 'paid' ? 'text-success' : 'text-warning'}`}>
+                                    {selectedInvoice.status}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button onClick={() => setShowInvoice(null)} className="flex-1 btn btn-secondary">
+                                <Download className="w-4 h-4" />
+                                Download
+                            </button>
+                            <button onClick={() => setShowInvoice(null)} className="flex-1 btn btn-primary">Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Page Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-primary">Payments</h1>
                     <p className="text-muted-foreground mt-1">Manage invoices and receive payments</p>
                 </div>
-                <button className="btn btn-primary">
+                <button onClick={() => setShowCreateInvoice(true)} className="btn btn-primary">
                     <FileText className="w-4 h-4" />
                     Create Invoice
                 </button>
@@ -98,7 +238,10 @@ export default function VendorPaymentsPage() {
                             <ArrowUpRight className="w-4 h-4 text-success" />
                         </button>
 
-                        <button className="w-full flex items-center gap-3 p-4 bg-secondary rounded-xl hover:bg-secondary-dark transition-colors text-left">
+                        <button
+                            onClick={() => setShowExport(true)}
+                            className="w-full flex items-center gap-3 p-4 bg-secondary rounded-xl hover:bg-secondary-dark transition-colors text-left"
+                        >
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                                 <Download className="w-5 h-5 text-primary" />
                             </div>
@@ -108,13 +251,16 @@ export default function VendorPaymentsPage() {
                             </div>
                         </button>
 
-                        <button className="w-full flex items-center gap-3 p-4 bg-secondary rounded-xl hover:bg-secondary-dark transition-colors text-left">
+                        <button
+                            onClick={() => setShowBankDetails(true)}
+                            className="w-full flex items-center gap-3 p-4 bg-secondary rounded-xl hover:bg-secondary-dark transition-colors text-left"
+                        >
                             <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                                 <CreditCard className="w-5 h-5 text-primary" />
                             </div>
                             <div className="flex-1">
                                 <p className="font-medium text-primary">Bank Details</p>
-                                <p className="text-xs text-muted-foreground">Update account info</p>
+                                <p className="text-xs text-muted-foreground">View account info</p>
                             </div>
                         </button>
                     </div>
@@ -192,9 +338,9 @@ export default function VendorPaymentsPage() {
                         <thead>
                             <tr className="border-b border-border-light">
                                 <th className="text-left py-3 px-5 text-xs font-semibold text-muted-foreground uppercase">Invoice</th>
-                                <th className="text-left py-3 px-5 text-xs font-semibold text-muted-foreground uppercase">Event</th>
+                                <th className="text-left py-3 px-5 text-xs font-semibold text-muted-foreground uppercase hidden md:table-cell">Event</th>
                                 <th className="text-left py-3 px-5 text-xs font-semibold text-muted-foreground uppercase">Amount</th>
-                                <th className="text-left py-3 px-5 text-xs font-semibold text-muted-foreground uppercase">Date</th>
+                                <th className="text-left py-3 px-5 text-xs font-semibold text-muted-foreground uppercase hidden md:table-cell">Date</th>
                                 <th className="text-left py-3 px-5 text-xs font-semibold text-muted-foreground uppercase">Status</th>
                                 <th className="text-right py-3 px-5 text-xs font-semibold text-muted-foreground uppercase">Actions</th>
                             </tr>
@@ -205,12 +351,12 @@ export default function VendorPaymentsPage() {
                                     <td className="py-4 px-5">
                                         <span className="font-medium text-primary">{invoice.id}</span>
                                     </td>
-                                    <td className="py-4 px-5 text-muted">{invoice.event}</td>
+                                    <td className="py-4 px-5 text-muted hidden md:table-cell">{invoice.event}</td>
                                     <td className="py-4 px-5 font-semibold text-primary">{formatCurrency(invoice.amount)}</td>
-                                    <td className="py-4 px-5 text-muted">{new Date(invoice.date).toLocaleDateString()}</td>
+                                    <td className="py-4 px-5 text-muted hidden md:table-cell">{new Date(invoice.date).toLocaleDateString()}</td>
                                     <td className="py-4 px-5">
                                         <span className={`badge ${invoice.status === 'paid' ? 'badge-success' :
-                                                invoice.status === 'approved' ? 'badge-accent' : 'badge-warning'
+                                            invoice.status === 'approved' ? 'badge-accent' : 'badge-warning'
                                             }`}>
                                             {invoice.status === 'paid' && <CheckCircle className="w-3 h-3" />}
                                             {invoice.status === 'approved' && <CheckCircle className="w-3 h-3" />}
@@ -219,7 +365,13 @@ export default function VendorPaymentsPage() {
                                         </span>
                                     </td>
                                     <td className="py-4 px-5 text-right">
-                                        <button className="text-sm text-accent hover:underline">View</button>
+                                        <button
+                                            onClick={() => setShowInvoice(invoice.id)}
+                                            className="text-sm text-accent hover:underline flex items-center gap-1 ml-auto"
+                                        >
+                                            <Eye className="w-4 h-4" />
+                                            View
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

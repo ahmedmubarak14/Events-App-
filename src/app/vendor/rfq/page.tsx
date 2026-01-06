@@ -272,11 +272,17 @@ export default function VendorRFQPage() {
                                         </div>
                                     ) : (
                                         <div className="flex gap-3">
-                                            <button className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-light transition-colors flex items-center justify-center gap-2">
+                                            <button
+                                                onClick={() => handleSubmitQuote(selectedRfqData.id)}
+                                                className="flex-1 py-3 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-light transition-colors flex items-center justify-center gap-2"
+                                            >
                                                 <Send className="w-4 h-4" />
                                                 Submit Quote
                                             </button>
-                                            <button className="px-4 py-3 border border-border rounded-xl text-sm font-medium hover:bg-secondary transition-colors">
+                                            <button
+                                                onClick={() => alert('View RFQ in new tab')}
+                                                className="px-4 py-3 border border-border rounded-xl text-sm font-medium hover:bg-secondary transition-colors"
+                                            >
                                                 <Eye className="w-4 h-4" />
                                             </button>
                                         </div>
