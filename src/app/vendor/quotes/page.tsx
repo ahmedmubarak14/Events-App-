@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, Clock, DollarSign, CheckCircle, AlertCircle, Download, Eye, Send, Filter } from 'lucide-react';
+import { FileText, Clock, DollarSign, CheckCircle, AlertCircle, Download, Eye, Send, Filter, X } from 'lucide-react';
 
 const quotes = [
     {
@@ -51,12 +51,60 @@ const statusColors: { [key: string]: string } = {
 
 export default function VendorQuotesPage() {
     const [filter, setFilter] = useState('all');
-    const [selectedQuote, setSelectedQuote] = useState<string | null>(null);
+    const [showQuote, setShowQuote] = useState<string | null>(null);
 
     const filteredQuotes = quotes.filter(q => filter === 'all' || q.status === filter);
+    const selectedQuote = quotes.find(q => q.id === showQuote);
 
     return (
         <div className="space-y-6 animate-fade-in">
+            {/* Quote Details Modal */}
+            {showQuote && selectedQuote && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Quote Details</h3>
+                            <button onClick={() => setShowQuote(null)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Quote ID</p>
+                                <p className="font-bold text-primary">{selectedQuote.id}</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">RFQ Title</p>
+                                <p className="font-medium text-primary">{selectedQuote.rfqTitle}</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Event</p>
+                                <p className="font-medium text-primary">{selectedQuote.event}</p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-secondary rounded-xl">
+                                    <p className="text-sm text-muted-foreground">Amount</p>
+                                    <p className="font-bold text-xl text-primary">SAR {selectedQuote.amount.toLocaleString()}</p>
+                                </div>
+                                <div className="p-4 bg-secondary rounded-xl">
+                                    <p className="text-sm text-muted-foreground">Status</p>
+                                    <p className={`font-medium capitalize ${selectedQuote.status === 'accepted' ? 'text-success' : selectedQuote.status === 'declined' ? 'text-danger' : 'text-warning'}`}>
+                                        {selectedQuote.status}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button onClick={() => setShowQuote(null)} className="flex-1 btn btn-secondary">
+                                <Download className="w-4 h-4" />
+                                Download
+                            </button>
+                            <button onClick={() => setShowQuote(null)} className="flex-1 btn btn-primary">Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -92,29 +140,29 @@ export default function VendorQuotesPage() {
                     <p className="text-sm text-muted-foreground">Accepted</p>
                 </div>
                 <div className="card p-4">
-                    <p className="text-2xl font-bold text-primary">SAR {(quotes.filter(q => q.status === 'accepted').reduce((sum, q) => sum + q.amount, 0) / 1000).toFixed(0)}K</p>
-                    <p className="text-sm text-muted-foreground">Won Value</p>
+                    <p className="text-2xl font-bold text-danger">{quotes.filter(q => q.status === 'declined').length}</p>
+                    <p className="text-sm text-muted-foreground">Declined</p>
                 </div>
             </div>
 
             {/* Quotes List */}
             <div className="card">
                 <div className="p-5 border-b border-border-light">
-                    <h3 className="font-semibold text-primary">Quote History</h3>
+                    <h3 className="font-semibold text-primary">Submitted Quotes</h3>
                 </div>
                 <div className="divide-y divide-border-light">
                     {filteredQuotes.map((quote) => (
                         <div key={quote.id} className="p-5 hover:bg-secondary-light transition-colors">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-3 flex-wrap">
-                                        <h4 className="font-medium text-primary">{quote.rfqTitle}</h4>
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        <h4 className="font-semibold text-primary">{quote.rfqTitle}</h4>
                                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${statusColors[quote.status]}`}>
                                             {quote.status}
                                         </span>
                                     </div>
                                     <p className="text-sm text-muted-foreground mt-1">{quote.event}</p>
-                                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                                    <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground flex-wrap">
                                         <span className="flex items-center gap-1">
                                             <FileText className="w-3 h-3" />
                                             {quote.id}
@@ -131,10 +179,18 @@ export default function VendorQuotesPage() {
                                         <p className="text-xs text-muted-foreground">Quote Amount</p>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button className="p-2 hover:bg-secondary rounded-lg transition-colors" title="View">
+                                        <button
+                                            onClick={() => setShowQuote(quote.id)}
+                                            className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                                            title="View"
+                                        >
                                             <Eye className="w-5 h-5 text-muted-foreground" />
                                         </button>
-                                        <button className="p-2 hover:bg-secondary rounded-lg transition-colors" title="Download">
+                                        <button
+                                            onClick={() => alert('Downloading quote...')}
+                                            className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                                            title="Download"
+                                        >
                                             <Download className="w-5 h-5 text-muted-foreground" />
                                         </button>
                                     </div>

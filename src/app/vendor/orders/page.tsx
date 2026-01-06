@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Package, Truck, Clock, CheckCircle, MapPin, Phone, Calendar, ChevronRight, AlertCircle } from 'lucide-react';
+import { Package, Truck, Clock, CheckCircle, MapPin, Phone, Calendar, ChevronRight, AlertCircle, X } from 'lucide-react';
 
 const orders = [
     {
@@ -47,10 +47,93 @@ const statusConfig: { [key: string]: { label: string; color: string; icon: React
 };
 
 export default function VendorOrdersPage() {
-    const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+    const [showOrder, setShowOrder] = useState<string | null>(null);
+    const [showStatusUpdate, setShowStatusUpdate] = useState<string | null>(null);
+
+    const selectedOrder = orders.find(o => o.id === showOrder || o.id === showStatusUpdate);
 
     return (
         <div className="space-y-6 animate-fade-in">
+            {/* Order Details Modal */}
+            {showOrder && selectedOrder && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-md w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Order Details</h3>
+                            <button onClick={() => setShowOrder(null)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Order ID</p>
+                                <p className="font-bold text-primary">{selectedOrder.id}</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Title</p>
+                                <p className="font-medium text-primary">{selectedOrder.title}</p>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground">Event / Client</p>
+                                <p className="font-medium text-primary">{selectedOrder.event}</p>
+                                <p className="text-sm text-muted-foreground">{selectedOrder.client}</p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-secondary rounded-xl">
+                                    <p className="text-sm text-muted-foreground">Value</p>
+                                    <p className="font-bold text-xl text-primary">SAR {selectedOrder.value.toLocaleString()}</p>
+                                </div>
+                                <div className="p-4 bg-secondary rounded-xl">
+                                    <p className="text-sm text-muted-foreground">Progress</p>
+                                    <p className="font-bold text-xl text-primary">{selectedOrder.progress}%</p>
+                                </div>
+                            </div>
+                            <div className="p-4 bg-secondary rounded-xl">
+                                <p className="text-sm text-muted-foreground mb-2">Items</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {selectedOrder.items.map((item, idx) => (
+                                        <span key={idx} className="px-3 py-1 bg-white border border-border rounded-full text-xs">{item}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                        <button onClick={() => setShowOrder(null)} className="w-full btn btn-primary mt-6">Close</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Status Update Modal */}
+            {showStatusUpdate && selectedOrder && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl max-w-sm w-full p-6 animate-scale-in">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold text-primary">Update Status</h3>
+                            <button onClick={() => setShowStatusUpdate(null)} className="p-2 hover:bg-secondary rounded-lg">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <p className="text-muted-foreground mb-4">Update the status for {selectedOrder.id}</p>
+                        <div className="space-y-2">
+                            {['in_progress', 'shipped', 'delivered'].map((status) => {
+                                const config = statusConfig[status];
+                                const StatusIcon = config.icon;
+                                return (
+                                    <button
+                                        key={status}
+                                        onClick={() => setShowStatusUpdate(null)}
+                                        className={`w-full flex items-center gap-3 p-4 border border-border rounded-xl hover:bg-secondary transition-colors ${selectedOrder.status === status ? 'bg-primary/5 border-primary' : ''}`}
+                                    >
+                                        <StatusIcon className={`w-5 h-5 text-${config.color}`} />
+                                        <span className="flex-1 text-left font-medium">{config.label}</span>
+                                        {selectedOrder.status === status && <CheckCircle className="w-5 h-5 text-success" />}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -88,48 +171,45 @@ export default function VendorOrdersPage() {
                     return (
                         <div key={order.id} className="card overflow-hidden">
                             <div className="p-5">
-                                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                                     <div className="flex-1">
-                                        <div className="flex items-center gap-3 flex-wrap">
+                                        <div className="flex items-center gap-2 flex-wrap">
                                             <h3 className="font-semibold text-primary">{order.title}</h3>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium bg-${config.color}/10 text-${config.color} flex items-center gap-1`}>
+                                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium bg-${config.color}/10 text-${config.color} flex items-center gap-1`}>
                                                 <StatusIcon className="w-3 h-3" />
                                                 {config.label}
                                             </span>
                                         </div>
-                                        <p className="text-sm text-muted-foreground mt-1">{order.event} • {order.client}</p>
-                                        <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
-                                            <span className="flex items-center gap-1">
-                                                <Package className="w-4 h-4" />
-                                                {order.id}
-                                            </span>
-                                            <span className="flex items-center gap-1">
+                                        <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
+                                            <span>{order.event}</span>
+                                            <span>•</span>
+                                            <span>{order.client}</span>
+                                        </div>
+                                        <div className="flex items-center gap-4 mt-2 text-sm flex-wrap">
+                                            <span className="flex items-center gap-1 text-muted-foreground">
                                                 <Calendar className="w-4 h-4" />
                                                 Delivery: {new Date(order.deliveryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </span>
+                                            <span className="font-semibold text-primary">SAR {order.value.toLocaleString()}</span>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-xl font-bold text-primary">SAR {order.value.toLocaleString()}</p>
-                                        <p className="text-sm text-muted-foreground">Order Value</p>
-                                    </div>
-                                </div>
 
-                                {/* Progress Bar */}
-                                {order.status !== 'delivered' && (
-                                    <div className="mt-4">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-sm text-muted-foreground">Progress</span>
-                                            <span className="text-sm font-medium text-primary">{order.progress}%</span>
+                                    {/* Progress */}
+                                    {order.status === 'in_progress' && (
+                                        <div className="w-full lg:w-48">
+                                            <div className="flex items-center justify-between text-sm mb-1">
+                                                <span className="text-muted-foreground">Progress</span>
+                                                <span className="font-medium text-primary">{order.progress}%</span>
+                                            </div>
+                                            <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-info rounded-full transition-all"
+                                                    style={{ width: `${order.progress}%` }}
+                                                ></div>
+                                            </div>
                                         </div>
-                                        <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                                            <div
-                                                className="h-full bg-info rounded-full transition-all"
-                                                style={{ width: `${order.progress}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
 
                                 {/* Order Items */}
                                 <div className="mt-4 pt-4 border-t border-border-light">
@@ -146,12 +226,18 @@ export default function VendorOrdersPage() {
 
                             {/* Actions */}
                             <div className="px-5 py-3 bg-secondary-light border-t border-border-light flex items-center justify-between">
-                                <button className="text-sm text-primary font-medium hover:text-accent transition-colors flex items-center gap-1">
+                                <button
+                                    onClick={() => setShowOrder(order.id)}
+                                    className="text-sm text-primary font-medium hover:text-accent transition-colors flex items-center gap-1"
+                                >
                                     View Details
                                     <ChevronRight className="w-4 h-4" />
                                 </button>
                                 {order.status === 'in_progress' && (
-                                    <button className="btn btn-primary btn-sm">
+                                    <button
+                                        onClick={() => setShowStatusUpdate(order.id)}
+                                        className="btn btn-primary btn-sm"
+                                    >
                                         Update Status
                                     </button>
                                 )}
