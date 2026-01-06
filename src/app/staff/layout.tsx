@@ -152,8 +152,8 @@ export default function StaffPortalLayout({
                                     href={item.href}
                                     onClick={() => setSidebarOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${pathname === item.href
-                                            ? 'bg-primary/10 text-primary shadow-sm'
-                                            : 'text-muted hover:bg-secondary hover:text-primary'
+                                        ? 'bg-primary/10 text-primary shadow-sm'
+                                        : 'text-muted hover:bg-secondary hover:text-primary'
                                         }`}
                                 >
                                     <item.icon className="w-5 h-5" />
@@ -166,10 +166,14 @@ export default function StaffPortalLayout({
 
                 {/* Footer */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border-light bg-white">
-                    <button className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-sm text-muted-foreground hover:bg-danger/10 hover:text-danger transition-colors">
+                    <Link
+                        href="/login"
+                        onClick={() => setSidebarOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 w-full rounded-xl text-sm text-muted-foreground hover:bg-danger/10 hover:text-danger transition-colors"
+                    >
                         <LogOut className="w-5 h-5" />
                         Sign Out
-                    </button>
+                    </Link>
                 </div>
             </aside>
 

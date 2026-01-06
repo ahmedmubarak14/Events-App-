@@ -228,17 +228,36 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
                 </ul>
             </nav>
 
-            {/* User Profile */}
+            {/* User Profile with Dropdown */}
             <div className="p-4 border-t border-white/10">
-                <div className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent to-accent-light flex items-center justify-center text-white font-bold text-sm shadow-lg">
-                        AM
+                <div className="space-y-2">
+                    <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-white/5">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent to-accent-light flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                            AM
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">Ahmed M.</p>
+                            <p className="text-xs text-white/50 truncate">Event Manager</p>
+                        </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">Ahmed M.</p>
-                        <p className="text-xs text-white/50 truncate">Event Manager</p>
+                    <div className="space-y-1">
+                        <Link
+                            href="/settings/integrations"
+                            onClick={handleLinkClick}
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                            <Link2 className="w-4 h-4" />
+                            Settings
+                        </Link>
+                        <Link
+                            href="/login"
+                            onClick={handleLinkClick}
+                            className="flex items-center gap-2 px-3 py-2 text-sm text-danger hover:bg-danger/10 rounded-lg transition-colors"
+                        >
+                            <X className="w-4 h-4" />
+                            Sign Out
+                        </Link>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-white/40" />
                 </div>
             </div>
         </aside>
