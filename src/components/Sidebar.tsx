@@ -23,7 +23,9 @@ import {
     GraduationCap,
     Link2,
     Home,
-    Sparkles
+    Sparkles,
+    Menu,
+    X
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -103,7 +105,12 @@ const navigation: NavItem[] = [
     },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+    isOpen?: boolean;
+    onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
     const pathname = usePathname();
     const [expandedItems, setExpandedItems] = useState<string[]>(['Plan & Comply', 'Source & Move', 'Staff & Manage', 'Growth']);
 
@@ -118,11 +125,26 @@ export default function Sidebar() {
         return pathname.startsWith(href);
     };
 
+    const handleLinkClick = () => {
+        if (onClose) onClose();
+    };
+
     return (
-        <aside className="fixed left-0 top-0 h-screen w-64 sidebar text-white flex flex-col z-50">
+        <aside className={`fixed left-0 top-0 h-screen w-64 sidebar text-white flex flex-col z-50 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}>
+            {/* Close button for mobile */}
+            {onClose && (
+                <button
+                    onClick={onClose}
+                    className="lg:hidden absolute top-4 right-4 p-2 rounded-xl hover:bg-white/10 transition-colors z-10"
+                >
+                    <X className="w-5 h-5" />
+                </button>
+            )}
+
             {/* Logo */}
             <div className="p-5 border-b border-white/10">
-                <Link href="/" className="flex items-center gap-3 group">
+                <Link href="/" className="flex items-center gap-3 group" onClick={handleLinkClick}>
                     <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/15 transition-colors">
                         <span className="text-xl font-bold bg-gradient-to-br from-white to-white/80 bg-clip-text text-transparent">S</span>
                     </div>
@@ -174,6 +196,7 @@ export default function Sidebar() {
                                                 <li key={child.name}>
                                                     <Link
                                                         href={child.href}
+                                                        onClick={handleLinkClick}
                                                         className={`sidebar-item py-2 ${pathname === child.href ? 'active text-white' : 'text-white/60'
                                                             }`}
                                                     >
@@ -188,6 +211,7 @@ export default function Sidebar() {
                             ) : (
                                 <Link
                                     href={item.href}
+                                    onClick={handleLinkClick}
                                     className={`sidebar-item ${isActive(item.href) ? 'active' : ''}`}
                                 >
                                     <item.icon className="icon flex-shrink-0" />
