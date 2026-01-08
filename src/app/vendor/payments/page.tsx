@@ -186,9 +186,9 @@ export default function VendorPaymentsPage() {
             </div>
 
             {/* Wallet Overview */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Balance Card */}
-                <div className="lg:col-span-2 card gradient-primary p-6 text-white relative overflow-hidden">
+                <div className="xl:col-span-2 card gradient-primary p-6 text-white relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent/20 rounded-full translate-y-1/2 -translate-x-1/2"></div>
 

@@ -128,9 +128,9 @@ export default function GuestDashboard() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Travel Summary */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="xl:col-span-2 space-y-4">
                     {/* Flight Card */}
                     <Link href="/guest/travel" className="block bg-white rounded-2xl p-6 shadow-sm border border-border hover:border-primary/30 transition-colors">
                         <div className="flex items-center justify-between mb-4">

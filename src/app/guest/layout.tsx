@@ -190,8 +190,8 @@ export default function GuestPortalLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="md:ml-64 pt-16 p-4 lg:p-6 overflow-x-hidden">
-                <div className="animate-fade-in max-w-full overflow-x-hidden">
+            <main className="md:ml-64 pt-20 pb-4 px-4 lg:pt-20 lg:pb-6 lg:px-6 min-h-screen overflow-x-hidden">
+                <div className="animate-fade-in max-w-full">
                     {children}
                 </div>
             </main>

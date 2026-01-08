@@ -134,9 +134,9 @@ export default function TemplatesPage() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Template Selection */}
-                <div className="lg:col-span-2">
+                <div className="xl:col-span-2">
                     <div className="bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
                         <div className="p-6 border-b border-border">
                             <h2 className="text-lg font-semibold text-primary">Select Event Type</h2>

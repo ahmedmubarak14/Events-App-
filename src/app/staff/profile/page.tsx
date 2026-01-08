@@ -60,7 +60,7 @@ export default function StaffProfilePage() {
                 )}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Profile Card */}
                 <div className="card p-6 text-center">
                     <div className="relative inline-block">
@@ -96,7 +96,7 @@ export default function StaffProfilePage() {
                 </div>
 
                 {/* Details */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="xl:col-span-2 space-y-6">
                     {/* Contact Info */}
                     <div className="card p-6">
                         <h3 className="font-semibold text-primary mb-4">Contact Information</h3>

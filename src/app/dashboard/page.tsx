@@ -203,9 +203,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Tasks Section */}
-                <div className="lg:col-span-2 card">
+                <div className="xl:col-span-2 card">
                     <div className="flex items-center justify-between p-5 border-b border-border-light">
                         <div>
                             <h2 className="font-semibold text-primary">Priority Tasks</h2>

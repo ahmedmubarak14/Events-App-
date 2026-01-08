@@ -38,9 +38,9 @@ export default function GuestHotelPage() {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Hotel Card */}
-                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
                     {/* Hotel Image Placeholder */}
                     <div className="h-48 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                         <span className="text-8xl">🏨</span>

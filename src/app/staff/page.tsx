@@ -185,9 +185,9 @@ export default function StaffDashboard() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Upcoming Shifts */}
-                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
                     <div className="p-6 border-b border-border flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-primary">Upcoming Shifts</h2>
                         <Link href="/staff/shifts" className="text-sm text-primary font-medium hover:underline">

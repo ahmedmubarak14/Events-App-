@@ -108,9 +108,9 @@ export default function VendorDashboard() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* New RFQs */}
-                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
+                <div className="xl:col-span-2 bg-white rounded-2xl shadow-sm border border-border overflow-hidden">
                     <div className="p-6 border-b border-border flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-primary">New RFQ Opportunities</h2>
                         <Link href="/vendor/rfq" className="text-sm text-primary font-medium hover:underline">

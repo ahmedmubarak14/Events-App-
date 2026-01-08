@@ -82,9 +82,9 @@ export default function StaffShiftsPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Calendar */}
-                <div className="lg:col-span-2 card p-6">
+                <div className="xl:col-span-2 card p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="font-semibold text-primary">{monthName}</h2>
                         <div className="flex gap-2">
