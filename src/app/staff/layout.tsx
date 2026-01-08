@@ -178,8 +178,8 @@ export default function StaffPortalLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="lg:ml-64 pt-16 p-4 lg:p-6">
-                <div className="animate-fade-in">
+            <main className="lg:ml-64 pt-16 p-4 lg:p-6 overflow-x-hidden">
+                <div className="animate-fade-in max-w-full overflow-x-hidden">
                     {children}
                 </div>
             </main>
